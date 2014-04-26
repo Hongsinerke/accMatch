@@ -1,35 +1,30 @@
 #include "algorithm.h"
 double stdev(MAT &mat)
 {
-    UINT length = mat.nlength;
-    double sum = 0;
-    double avr = average(mat);
-    if(mat.nlength==0)return 0;
+    UINT length		= mat.nlength;
+    double sum		= 0;
+    double avr		= average(mat);
+
+    if(mat.nlength == 0)return 0;
     for(int i(0); i < length; i++ ) sum += pow(mat.GetValue(0,i)-avr, 2)/length;
     return (sqrt(sum));
 }
 double average(MAT &mat)
-{ 
-    DEBUG_MAT_INFO(mat);
-    DEBUG_MAT_ELEMENTS(mat);
-    if(mat.nlength==0)return 0;
-    double sum=0;
-    for(int i(0);i<mat._row;i++)
+{
+    double sum = 0;
+    if(mat.nlength == 0)return 0;
+    for(int i(0) ; i<mat._row ; i++)
     {
-        cout<<"before loop "<<sum<<endl;
         for(int j(0);j<mat._col;j++)
         {
-            double rt = mat.GetValue(i,j);
-            sum+=(mat.GetValue(i,j)/mat.nlength);
-            cout<<"loop "<<sum<<"  calc: "<<rt<<"/"<<mat.nlength<<endl;
+            sum += mat.GetValue(i,j) / mat.nlength;
         }
-        cout<<"after loop "<<sum<<endl;
     }
     return sum;
 }
 MAT trapz(MAT &matX,MAT &matY)
 {
-    MAT matRet(1,matX.nlength);//ä¼°è®¡ä¹Ÿç”¨ä¸åˆ°äºŒç»´çŸ©é˜µâ€¦â€¦è¿™é‡Œå…ˆè¿™æ ·å§(ä¸ä¼šå†™)
+    MAT matRet(1,matX.nlength);//¹À¼ÆÒ²ÓÃ²»µ½¶þÎ¬¾ØÕó¡­¡­ÕâÀïÏÈÕâÑù°É(²»»áÐ´)
     if(matX.nlength!=matY.nlength || matX._row!=1 || matY._row!=1)
     {
         return MAT();
@@ -45,27 +40,47 @@ MAT trapz(MAT &matX,MAT &matY)
     return matRet;
 }
 
-double cov(MAT &matX,MAT &matY)
+double normalization (MAT &mat , UINT row,UINT col )	//¹éÒ»»¯
 {
-    double Ex = average(matX);
-    double Ey = average(matY);
-    cout<<"å¹³å‡å€¼X: "<<Ex<<endl<<"å¹³å‡å€¼Y: "<<Ey<<endl;
-    MAT matAvr(matX.nlength,matY.nlength);
-    DEBUG_MAT_INFO(matAvr);
-    for(UINT i(0);i<matX.nlength;i++)
-    {
-        for(UINT j(0);j<matY.nlength;j++)
-        {
-            matAvr[i][j]=(matX.GetValue(i)-Ex)*(matY.GetValue(j)-Ey);
-        }//æž„é€ å­˜åœ¨æ‰€æœ‰X Yç»„åˆçš„çŸ©é˜µ
-    }
-    DEBUG_MAT_INFO(matAvr);
-    DEBUG_MAT_ELEMENTS(matAvr);
-    cout<<"åæ–¹å·®: "<<scientific<<average(matAvr)<<endl;
-    return average(matAvr);//æœ€åŽçš„å¹³å‡å€¼E{[X-E(X)]*[Y-E(Y)]}
+	UINT length = mat.nlength;
+	double	sum = 0 , 
+			Average = average(mat) , 
+			Stdev = stdev(mat);
+	return ( ( mat.GetValue ( row , col ) - Average ) / Stdev);
 }
-double cor(MAT &matX,MAT &matY)
+
+double CorCoe ( MAT &matX , MAT &matY )        //Ïà¹ØÏµÊý
 {
-    cout<<"æ ‡å‡†å·®X: "<<stdev(matX)<<"\næ ‡å‡†å·®Y: "<<stdev(matY)<<endl;
-    return cov(matX,matY)/(stdev(matX)*stdev(matY));
+	double	AverageX = average(matX) , 
+			AverageY = average(matY) ,
+			x , 
+			y ,
+			sum_xy	= 0 ,
+			pow_x	= 0 ,
+			pow_y	= 0 ;
+
+	UINT length = matX.nlength;		//Ò»ÑùµÄÊýÁ¿¾ÍÖ»È¡Ò»´ÎÁË
+
+	for(int i(0) ; i<length ; i++)
+	{
+		x		= matX.GetValue(0,i);
+		y		= matY.GetValue(0,i);
+		sum_xy		+= x*y;
+		pow_x	+= x*x;
+		pow_y	+= y*y;
+	}
+
+	double r =	(sum_xy - length * AverageX * AverageY) / 
+				sqrt ( 
+						(pow_x - length * AverageX * AverageX) * 
+						(pow_y - length * AverageY * AverageY) 
+					 );
+	return r;
+}
+
+bool Judge(double rX , double rY , double rZ)
+{
+	double n = 0.8;   //Éè¶¨µÄ¼ì²â·¶Î§ÓÃµÄ£¬ÇëÏÈÐÞ¸Ä¸³ÖµÔÙÓÃ
+	if(n < rX < 1 && n < rY < 1 && n < rZ < 1) return true;
+	else return false;
 }
