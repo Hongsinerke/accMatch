@@ -4,33 +4,33 @@
 using namespace std;
 #define DELTA_TIME 0.001
 
-#define NOT_CONFIGURED  //ÏÂÃæºêÌîºÃÖ®ºó°ÑÕâĞĞ×¢ÊÍµô£¨²»ÄÜÓÃ~Ö®ÀàµÄ·ûºÅÅ¶£©
-#define DATA_INPUT_TIME "~/workspace/sensordata/timestamp.txt"
-#define DATA_INPUT_X "~/workspace/sensordata/AccdataX.txt"
-#define DATA_INPUT_Y "~/workspace/sensordata/AccdataY.txt"
-#define DATA_INPUT_Z "~/workspace/sensordata/AccdataZ.txt"
-#define DATA_OUTPUT_VCX "~/workspace/sensordata/VcdataX.txt"
-#define DATA_OUTPUT_VCY "~/workspace/sensordata/VcdataY.txt"
-#define DATA_OUTPUT_VCZ "~/workspace/sensordata/VcdataZ.txt"
-#define DATA_OUTPUT_POSX  "~/workspace/sensordata/PosdataX.txt"
-#define DATA_OUTPUT_POSY  "~/workspace/sensordata/PosdataY.txt"
-#define DATA_OUTPUT_POSZ  "~/workspace/sensordata/PosdataZ.txt"
-#define DATA_OUTPUT_OPTIMIZE_ACCX "~/workspace/sensordata/AccdataX_optimized.txt"
-#define DATA_OUTPUT_OPTIMIZE_ACCY "~/workspace/sensordata/AccdataY_optimized.txt"
-#define DATA_OUTPUT_OPTIMIZE_ACCZ "~/workspace/sensordata/AccdataZ_optimized.txt"
-#define DATA_OUTPUT_OPTIMIZE_VCX "~/workspace/sensordata/VcdataX_optimized.txt"
-#define DATA_OUTPUT_OPTIMIZE_VCY "~/workspace/sensordata/VcdataY_optimized.txt"
-#define DATA_OUTPUT_OPTIMIZE_VCZ "~/workspace/sensordata/VcdataZ_optimized.txt"
-#define DATA_OUTPUT_OPTIMIZE_POSX  "~/workspace/sensordata/PosdataX_optimized.txt"
-#define DATA_OUTPUT_OPTIMIZE_POSY  "~/workspace/sensordata/PosdataY_optimized.txt"
-#define DATA_OUTPUT_OPTIMIZE_POSZ  "~/workspace/sensordata/PosdataZ_optimized.txt"
+//#define NOT_CONFIGURED  //ä¸‹é¢å®å¡«å¥½ä¹‹åæŠŠè¿™è¡Œæ³¨é‡Šæ‰
+#define DATA_INPUT_TIME "/home/pnck/workspace/sensordata/timestamp.txt"
+#define DATA_INPUT_X "/home/pnck/workspace/sensordata/AccdataX.txt"
+#define DATA_INPUT_Y "/home/pnck/workspace/sensordata/AccdataY.txt"
+#define DATA_INPUT_Z "/home/pnck/workspace/sensordata/AccdataZ.txt"
+#define DATA_OUTPUT_VCX "/home/pnck/workspace/sensordata/VcdataX.txt"
+#define DATA_OUTPUT_VCY "/home/pnck/workspace/sensordata/VcdataY.txt"
+#define DATA_OUTPUT_VCZ "/home/pnck/workspace/sensordata/VcdataZ.txt"
+#define DATA_OUTPUT_POSX  "/home/pnck/workspace/sensordata/PosdataX.txt"
+#define DATA_OUTPUT_POSY  "/home/pnck/workspace/sensordata/PosdataY.txt"
+#define DATA_OUTPUT_POSZ  "/home/pnck/workspace/sensordata/PosdataZ.txt"
+#define DATA_OUTPUT_OPTIMIZE_ACCX "/home/pnck/workspace/sensordata/AccdataX_optimized.txt"
+#define DATA_OUTPUT_OPTIMIZE_ACCY "/home/pnck/workspace/sensordata/AccdataY_optimized.txt"
+#define DATA_OUTPUT_OPTIMIZE_ACCZ "/home/pnck/workspace/sensordata/AccdataZ_optimized.txt"
+#define DATA_OUTPUT_OPTIMIZE_VCX "/home/pnck/workspace/sensordata/VcdataX_optimized.txt"
+#define DATA_OUTPUT_OPTIMIZE_VCY "/home/pnck/workspace/sensordata/VcdataY_optimized.txt"
+#define DATA_OUTPUT_OPTIMIZE_VCZ "/home/pnck/workspace/sensordata/VcdataZ_optimized.txt"
+#define DATA_OUTPUT_OPTIMIZE_POSX  "/home/pnck/workspace/sensordata/PosdataX_optimized.txt"
+#define DATA_OUTPUT_OPTIMIZE_POSY  "/home/pnck/workspace/sensordata/PosdataY_optimized.txt"
+#define DATA_OUTPUT_OPTIMIZE_POSZ  "/home/pnck/workspace/sensordata/PosdataZ_optimized.txt"
 
 
 //---------------------output data format define----------------
 
 #define MATLAB_DATA_GENERATE
-//Èç¹ûĞèÒªÉú³Éµ¼ÈëmatlabµÄÊı¾İ(ÓÃ¿Õ¸ñ¸ô¿ªµÄÈô¸ÉÊı×Ö)Ôò±£Áô¸ÃĞĞ¶¨Òå
-#define HUMAN_READ_DATA(ID,DATA) "[%d]%.8lf\t",ID,DATA//½ÏÒ×¶ÁµÄ¸ñÊ½
+//å¦‚æœéœ€è¦ç”Ÿæˆå¯¼å…¥matlabçš„æ•°æ®(ç”¨ç©ºæ ¼éš”å¼€çš„è‹¥å¹²æ•°å­—)åˆ™ä¿ç•™è¯¥è¡Œå®šä¹‰
+#define HUMAN_READ_DATA(ID,DATA) "[%d]%.8lf\t",ID,DATA//è¾ƒæ˜“è¯»çš„æ ¼å¼
 
 #ifndef MATLAB_DATA_GENERATE
 #define AUTO_FORMAT_DATA(ID,DATA) HUMAN_READ_DATA(ID,DATA)
@@ -39,7 +39,7 @@ using namespace std;
 #endif
 
 #ifndef  MATLAB_DATA_GENERATE
-#define OUT_LINE(X) puts(X)//ÓÃOUT_LINE´úÌæputs  Éú³ÉmatlabÊı¾İÊ±²»»áĞ´Èë
+#define OUT_LINE(X) puts(X)//ç”¨OUT_LINEä»£æ›¿puts  ç”Ÿæˆmatlabæ•°æ®æ—¶ä¸ä¼šå†™å…¥
 #else
 #define OUT_LINE(X) 
 #endif

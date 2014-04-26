@@ -1,57 +1,55 @@
 #include "intg.h"
 
-void OptimizeAcc(MAT &time , MAT &data , double EvThreshold)//ÓÅ»¯¼ÓËÙ¶ÈÊı¾İ£¨¹é0»¯
+void OptimizeAcc(MAT &time,MAT &data,double EvThreshold)//ä¼˜åŒ–åŠ é€Ÿåº¦æ•°æ®ï¼ˆå½’0åŒ–
 {
-    bool bAvrModifyed	= false;//Æ½¾ùÖµĞŞÕı
-    for(UINT i(10) , j(0) ; i<data._col ; )//10µãÒ»Ö¡
+    bool bAvrModifyed=false;//å¹³å‡å€¼ä¿®æ­£
+    for(UINT i(10),j(0);i<data._col;)//10ç‚¹ä¸€å¸§
     {
         cout<<"Frame "<<i/10<<":"<<endl<<fixed<<setprecision(9);
         MAT sub = data.SubMat(0,j,0,i);
         double avr = average(sub);
-        double ev = stdev(sub);//¿´Ò»ÏÂÖ¡Æ½¾ùÖµºÍ±ê×¼²î
+        double ev = stdev(sub);//çœ‹ä¸€ä¸‹å¸§å¹³å‡å€¼å’Œæ ‡å‡†å·®
         cout<<"ev:"<<ev<<endl<<"avr:"<<avr<<endl<<"timepass:"<<time[j]-time[0]<<"-"<<time[i]-time[0]<<endl;
 
-            if(ev>EvThreshold||sqrt(avr*avr)>0.21)//ÔË¶¯µÄ±ê×¼²î¼°Æ½¾ùÖµãĞÖµ
+            if(ev>EvThreshold||sqrt(avr*avr)>0.21)//è¿åŠ¨çš„æ ‡å‡†å·®åŠå¹³å‡å€¼é˜ˆå€¼
             {
                 cout<<"STATE:MOVING"<<endl<<endl;
                 if(bAvrModifyed)goto LB_CONTINUE;
-                //µÚÒ»¸öÔË¶¯Ö¡
+                //ç¬¬ä¸€ä¸ªè¿åŠ¨å¸§
                 MAT subStop = data.SubMat(0,0,0,j);
                 avr = average(subStop);
-                data-=avr;//ÓÃ¾²Ö¹Æ½¾ùÖµĞŞÕıËùÓĞÊ±¿Ì¼ÓËÙ¶È£¨ÓÃµ÷ÁãÖµĞŞÕı£¿
-                for(UINT k(0) ; k<j ; k++) 
-					data[k]=0;//È»ºó°Ñ¾²Ö¹Çø¹é0»¯
+                data-=avr;//ç”¨é™æ­¢å¹³å‡å€¼ä¿®æ­£æ‰€æœ‰æ—¶åˆ»åŠ é€Ÿåº¦ï¼ˆç”¨è°ƒé›¶å€¼ä¿®æ­£ï¼Ÿ
+                for(UINT k(0);k<j;k++)data[k]=0;//ç„¶åæŠŠé™æ­¢åŒºå½’0åŒ–
                 bAvrModifyed=true;
         }
         else 
         {
             cout<<"STATE:STOP"<<endl<<endl;
-            if( !bAvrModifyed ) goto LB_CONTINUE;//Æ½¾ùÖµĞŞÕıÖ®Ç°ÏÈ²»Òª¶¯
-            for(UINT k(j) ; k<=i ; k++)//ĞŞÕı¾²Ö¹Ö¡¼ÓËÙ¶ÈÖÁ0
+            if(!bAvrModifyed)goto LB_CONTINUE;//å¹³å‡å€¼ä¿®æ­£ä¹‹å‰å…ˆä¸è¦åŠ¨
+            for(UINT k(j);k<=i;k++)//ä¿®æ­£é™æ­¢å¸§åŠ é€Ÿåº¦è‡³0
             {
-                data[k] = 0;
+                data[k]=0;
             }   
         }
         LB_CONTINUE:j = i;
-        i += 10;
+        i+=10;
         if(i>=data._col && i<data._col+9)i=data._col-1;
     }
-    if(!bAvrModifyed)//Ã»ÓĞÔË¶¯Ö¡¡­¡­È«0¿©
+    if(!bAvrModifyed)//æ²¡æœ‰è¿åŠ¨å¸§â€¦â€¦å…¨0å’¯
     {
-        for(UINT i(0) ; i<data._col ; i++)
-			data[i]=0;
+        for(UINT i(0);i<data._col;i++)data[i]=0;
     }
-//    for(UINT term(0);term<2;term++)//ÅÜÁ½ÌË
-    for(UINT i(1) ; i<data._col ; i++)//µÚ¶şÌË£¬ĞŞÕıµ¥ÔË¶¯Ö¡£¨Îó²î£©
+    for(UINT term(0);term<3;term++)//è·‘ä¸¤è¶Ÿ
+    for(UINT i(1);i<data._col;i++)//ç¬¬äºŒè¶Ÿï¼Œä¿®æ­£å•è¿åŠ¨å¸§ï¼ˆè¯¯å·®ï¼‰
     {
-        if(data[i]!=0 && data[i-1] == 0)//ÔË¶¯Ö¡ÆğÊ¼µã
+        if(data[i]!=0&&data[i-1]==0)//è¿åŠ¨å¸§èµ·å§‹ç‚¹
         {
-            if(i+20<data._col && data[i+20]==0 && data[i+19] == 0)//20µãÖ®ºóÊÇ0,±¾Ö¡ÊÇµ¥ÔË¶¯Ö¡
+            if(i+21<data._col&&data[i+20]==0&&(data[i+10]==0||data[i+21]))//20ç‚¹ä¹‹åæˆ–10ç‚¹ä¹‹åæ˜¯0,æœ¬å¸§æ˜¯å•è¿åŠ¨å¸§
             {
-                puts("Single Moving Frame");
-                for(UINT j(i-1) ; j<=i+20 ; j++)
+                cout<<"Single Moving Frame "<<endl;
+                for(UINT j(i-1);j<=i+21;j++)
                 {
-                    data[j] = 0;
+                    data[j]=0;
                 }
             }
         }
@@ -63,44 +61,39 @@ void OptimizeVc(MAT &data)
     bool bMovStart=false;
     for(UINT i(1),j(0);i<data._col;i++)
     {
-        if(!bMovStart)//Ó¦¸ÃÊÇ²»¶¯µÄ×´Ì¬
+        if(!bMovStart)//åº”è¯¥æ˜¯ä¸åŠ¨çš„çŠ¶æ€
         {
-            if(data[i] == data[i-1])
-			{
-				data[i-1] = 0;
-				continue;
-			}
-			//ÏàµÈ£¬Ö±Ïß£¬ÖÃ0,ÏÂÒ»µã
-            //²»µÈ£¬±êÆğÊ¼
+            if(data[i]==data[i-1]){data[i-1]=0;continue;}//ç›¸ç­‰ï¼Œç›´çº¿ï¼Œç½®0,ä¸‹ä¸€ç‚¹
+            //ä¸ç­‰ï¼Œæ ‡èµ·å§‹
             data[i-1]=0;
-            j = i-1;//jÒªÑ¡ÔÚËÙ¶ÈÎª0µÄµã
+            j = i-1;//jè¦é€‰åœ¨é€Ÿåº¦ä¸º0çš„ç‚¹
             bMovStart = true;
         }
-        else //Ó¦¸ÃÊÇÕıÔÚÔË¶¯µÄ×´Ì¬
+        else //åº”è¯¥æ˜¯æ­£åœ¨è¿åŠ¨çš„çŠ¶æ€
         {
-            if(data[i]!=data[i-1])continue;//²»µÈ£¬»¹ÔÚÔË¶¯£¬ÏÂÒ»µã
-            //ÏàµÈ£¬±ê½áÊø£¬ĞŞÕı
+            if(data[i]!=data[i-1])continue;//ä¸ç­‰ï¼Œè¿˜åœ¨è¿åŠ¨ï¼Œä¸‹ä¸€ç‚¹
+            //ç›¸ç­‰ï¼Œæ ‡ç»“æŸï¼Œä¿®æ­£
             bool bRealStop = true;
-            for(UINT k(0);k<2&&k+i<data._col;k++)//Ïòºó¼ì²é5µã
+            for(UINT k(0);k<2&&k+i<data._col;k++)//å‘åæ£€æŸ¥5ç‚¹
             {
-                if(data[i+k]!=data[i]){bRealStop=false;break;}//²¢·ÇÁ¬Ğø5µã¶¼ÏàÍ¬£¬Î´ÕæÕı¾²Ö¹
+                if(data[i+k]!=data[i]){bRealStop=false;break;}//å¹¶éè¿ç»­5ç‚¹éƒ½ç›¸åŒï¼ŒæœªçœŸæ­£é™æ­¢
             }
-            if(bRealStop)//ÕæÕı¾²Ö¹ÁË
+            if(bRealStop)//çœŸæ­£é™æ­¢äº†
             {
-                puts("Optimize Vc");
-                bMovStart=false;//²»ÔË¶¯ÁË
-                //ĞŞÕı
-                //Çø¼ä[j,i]ÎªĞŞÕıÇø¼ä
+                cout<<"Optimize Vc"<<endl;
+                bMovStart=false;//ä¸è¿åŠ¨äº†
+                //ä¿®æ­£
+                //åŒºé—´[j,i]ä¸ºä¿®æ­£åŒºé—´
                 double delta = data[i]-data[j];
                 for(UINT t(j);t<=i;t++)//Vo = data[T]-(T-Tj)*((Vi-Vj)/(Ti-Tj))
                 {
                     data[t] -= (t-j)*((data[i]-data[j])/(double)(i-j));
                 }
-                for(UINT k(i+1);k<data._col;k++)//ºó±ßµÄµãÈ«²¿ÒÆ¶¯»ù×¼Êı
+                for(UINT k(i+1);k<data._col;k++)//åè¾¹çš„ç‚¹å…¨éƒ¨ç§»åŠ¨åŸºå‡†æ•°
                 {
                     data[k]-=delta;
                 }
-                //Õâ¸öµØ·½iµã±»ĞŞÕıÎª0ÁË£¬ËùÒÔÒªÌø¹ıÏÂÒ»¸öµã£¬ÏÂ¸öµãºÍÏÂÏÂ¸öµãÏàµÈ£¬ÈÃËûÃÇÏà»¥±È½Ï²¢ÖÃ0
+                //è¿™ä¸ªåœ°æ–¹iç‚¹è¢«ä¿®æ­£ä¸º0äº†ï¼Œæ‰€ä»¥è¦è·³è¿‡ä¸‹ä¸€ä¸ªç‚¹ï¼Œä¸‹ä¸ªç‚¹å’Œä¸‹ä¸‹ä¸ªç‚¹ç›¸ç­‰ï¼Œè®©ä»–ä»¬ç›¸äº’æ¯”è¾ƒå¹¶ç½®0
                 i++;
             }
         }
@@ -121,7 +114,7 @@ int main(void)
     matAccY.ReadFromFile(DATA_INPUT_Y);
     MAT matAccZ(1,1001);
     matAccZ.ReadFromFile(DATA_INPUT_Z);
-    MAT matVcX = trapz(matTime,matAccX);//½«¼ÓËÙ¶È»ı·Ö
+    MAT matVcX = trapz(matTime,matAccX);//å°†åŠ é€Ÿåº¦ç§¯åˆ†
     MAT matVcY = trapz(matTime,matAccY);
     MAT matVcZ = trapz(matTime,matAccZ);
 
@@ -129,15 +122,15 @@ int main(void)
     matVcY.SaveToFile(DATA_OUTPUT_VCY);
     matVcZ.SaveToFile(DATA_OUTPUT_VCZ);
 
-    MAT matPosX1 = trapz(matTime,matVcX);//½«ËÙ¶È»ı·Ö
-    MAT matPosY1 = trapz(matTime,matVcY);
-    MAT matPosZ1 = trapz(matTime,matVcZ);
+    MAT matPosX = trapz(matTime,matVcX);//å°†é€Ÿåº¦ç§¯åˆ†
+    MAT matPosY = trapz(matTime,matVcY);
+    MAT matPosZ = trapz(matTime,matVcZ);
 
-    matPosX1.SaveToFile(DATA_OUTPUT_POSX);
-    matPosY1.SaveToFile(DATA_OUTPUT_POSY);
-    matPosZ1.SaveToFile(DATA_OUTPUT_POSZ);
+    matPosX.SaveToFile(DATA_OUTPUT_POSX);
+    matPosY.SaveToFile(DATA_OUTPUT_POSY);
+    matPosZ.SaveToFile(DATA_OUTPUT_POSZ);
 
-    OptimizeAcc(matTime,matAccX,0.074);//¹éÁã»¯¼ÓËÙ¶È
+    OptimizeAcc(matTime,matAccX,0.074);//å½’é›¶åŒ–åŠ é€Ÿåº¦
     OptimizeAcc(matTime,matAccY,0.074);
     OptimizeAcc(matTime,matAccZ,0.074);
 
@@ -145,7 +138,7 @@ int main(void)
     matAccY.SaveToFile(DATA_OUTPUT_OPTIMIZE_ACCY);
     matAccZ.SaveToFile(DATA_OUTPUT_OPTIMIZE_ACCZ);
     //------------------------------------------
-    matVcX = trapz(matTime,matAccX);//½«¼ÓËÙ¶È»ı·Ö
+    matVcX = trapz(matTime,matAccX);//å°†åŠ é€Ÿåº¦ç§¯åˆ†
     matVcY = trapz(matTime,matAccY);
     matVcZ = trapz(matTime,matAccZ);
 
@@ -157,19 +150,17 @@ int main(void)
     matVcY.SaveToFile(DATA_OUTPUT_OPTIMIZE_VCY);
     matVcZ.SaveToFile(DATA_OUTPUT_OPTIMIZE_VCZ);
 
-    MAT matPosX2 = trapz(matTime,matVcX);//½«ËÙ¶È»ı·Ö
-    MAT matPosY2 = trapz(matTime,matVcY);
-    MAT	matPosZ2 = trapz(matTime,matVcZ);
+    matPosX = trapz(matTime,matVcX);//å°†é€Ÿåº¦ç§¯åˆ†
+    matPosY = trapz(matTime,matVcY);
+    matPosZ = trapz(matTime,matVcZ);
 
-    matPosX2.SaveToFile(DATA_OUTPUT_OPTIMIZE_POSX);
-    matPosY2.SaveToFile(DATA_OUTPUT_OPTIMIZE_POSY);
-    matPosZ2.SaveToFile(DATA_OUTPUT_OPTIMIZE_POSZ);
+    matPosX.SaveToFile(DATA_OUTPUT_OPTIMIZE_POSX);
+    matPosY.SaveToFile(DATA_OUTPUT_OPTIMIZE_POSY);
+    matPosZ.SaveToFile(DATA_OUTPUT_OPTIMIZE_POSZ);
 
-	double matCorCoeX = CorCoe (matPosX1 , matPosX2);
-	double matCorCoeY = CorCoe (matPosY1 , matPosY2);
-	double matCorCoeZ = CorCoe (matPosZ1 , matPosZ2);
+    MAT m = matAccX.SubMat(0,281,0,290);
+    cout<<"ç›¸å…³ç³»æ•°: "<<scientific<<setprecision(6)<<cor(m,m)<<endl;
 
-	int judge = Judge(matCorCoeX , matCorCoeY , matCorCoeZ); //ÕâÀïÎÒÏÈÅĞ¶¨µ½Õâ
     
     return 0;
 }

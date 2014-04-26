@@ -2,7 +2,7 @@
 	> File Name: predef.h
 	> Author: pnck
 	> Site: www.pnck.net 
-	> Created Time: 2014Äê04ÔÂ07ÈÕ ÐÇÆÚÒ» 21Ê±14·Ö31Ãë
+	> Created Time: 2014å¹´04æœˆ07æ—¥ æ˜ŸæœŸä¸€ 21æ—¶14åˆ†31ç§’
  ************************************************************************/
 #pragma once
 #include <cstdlib>

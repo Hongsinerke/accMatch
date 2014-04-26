@@ -11,18 +11,31 @@ typedef TCHAR* PTCHAR,PSTR,LPSTR
 typedef const LPSTR LPCTSTR;
 */
 
+#define DEBUG_MAT_INFO(M)  cout<<"---------Matrix Info--------"<<endl<<M._row<<" rows x "<<M._col<<" cols\nlength = "<<M.nlength<<endl<<"First: "<<M.GetValue(0)<<"  Last: "<<M.GetValue(M.nlength-1)<<endl<<"----------End Info----------"<<endl
+#define DEBUG_MAT_ELEMENTS(M) cout<<"----------Elements-------"<<endl;\
+    for(UINT i(0);i<M._row;i++)\
+    {\
+        cout<<"â†’   ";\
+        for(UINT j(0);j<M._col;j++)\
+        {\
+            cout<<M.GetValue(i,j)<<"  \t";\
+        }\
+        cout<<"â†  \n";\
+    }\
+cout<<"------------End Elements-----------"<<endl
 
-class MAT //²»ÊÇËùÓÐµÄº¯Êý¶¼Ð´ÁËÊµÏÖµÄ
+class MAT 
 {
 protected:
-    double ** _pElements;//ÔªËØÊý×é
+    double ** _pElements;//å…ƒç´ æ•°ç»„
     enum matType{single,inherit} type;
+    //USHORT dim;//ç»´åº¦ï¼Œç”¨äºŽä¸‹æ ‡å±‚æ•°åˆ¤æ–­
 public:
-    UINT nlength;//ÔªËØ¸öÊý
-    UINT _row;//ÐÐ
-    UINT _col;//ÁÐ
-    MAT();//¿Õ¾ØÕó
-    MAT(UINT nRow,UINT nCol);//xÐÐxÁÐµÄ0¾ØÕó
+    UINT nlength;//å…ƒç´ ä¸ªæ•°
+    UINT _row;//è¡Œ
+    UINT _col;//åˆ—
+    MAT();//ç©ºçŸ©é˜µ
+    MAT(UINT nRow,UINT nCol);//xè¡Œxåˆ—çš„0çŸ©é˜µ
     MAT (const MAT &mat);
     MAT & operator = (MAT mat);
     double operator = (double num);
@@ -36,17 +49,17 @@ public:
     void operator /= (double num);
     void operator ^= (MAT &mat);
     friend MAT operator * (double num,MAT &mat);
-    friend MAT operator * (MAT &mat,double num);//Êý³Ë
-    MAT operator ^ (MAT &mat);//ÄÚ»ý
-    MAT operator [](UINT id);//·µ»ØMAT£¬ÖØÔØÀàÐÍ×ª»»·ûÊµÏÖÈ¡ÔªËØ
-    operator double() const {if(!_col)return 0;else return _pElements[0][0];};//·µ»ØµÚÒ»¸öÔªËØ£¬ÕâÑùÔÚ¾ØÕóÖ»ÓÐÒ»¸öÔªËØÊ±¿É×Ô¶¯×ªÎªÊý×Ö
+    friend MAT operator * (MAT &mat,double num);//æ•°ä¹˜
+    MAT operator ^ (MAT &mat);//å†…ç§¯
+    MAT operator [](UINT id);//è¿”å›žMATï¼Œé‡è½½ç±»åž‹è½¬æ¢ç¬¦å®žçŽ°å–å…ƒç´ 
+    operator double() const {if(!_col)return 0;else return _pElements[0][0];};//è¿”å›žç¬¬ä¸€ä¸ªå…ƒç´ ï¼Œè¿™æ ·åœ¨çŸ©é˜µåªæœ‰ä¸€ä¸ªå…ƒç´ æ—¶å¯è‡ªåŠ¨è½¬ä¸ºæ•°å­—
     bool IsEmpty(){if(_row&&_col)return true;else return false;}
     ~MAT();
     bool SaveToFile(LPCTSTR szFile);
     bool ReadFromFile(LPCTSTR szFile);
     MAT SubMat(UINT r1,UINT c1,UINT r2,UINT c2);
     double GetValue(UINT row,UINT col);
+    double GetValue(UINT ID);//ç›´æŽ¥å–ç¬¬Nä¸ªå…ƒç´ 
     void SetValue(UINT row,UINT col,double val);
     void CopyFromArray(double ar[],UINT length);
-
 };

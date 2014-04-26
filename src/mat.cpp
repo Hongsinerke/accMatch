@@ -2,8 +2,16 @@
 
 double MAT::GetValue(UINT row,UINT col)
 {
-    if(row<=_row-1 && col<=_col-1)
+    if(row<_row && col<_col)
         return _pElements[row][col];
+    else
+        return 0;
+}
+
+double MAT::GetValue(UINT ID)
+{
+    if(ID<nlength)//0åˆ°N
+        return GetValue(ID/_col,ID%_col);
     else
         return 0;
 }
@@ -13,7 +21,7 @@ void MAT::SetValue(UINT row,UINT col,double val)
     if(row<=_row-1 && col<=_col-1)
         _pElements[row][col] = val;
 }
-MAT::MAT()//Ä¬ÈÏ¹¹Ôì¿Õ¾ØÕó  µ«ÊÇ³õÊ¼»¯µÚÒ»¸öĞĞÖ¸Õë ¾ØÕóÎª1x0´óĞ¡
+MAT::MAT()//é»˜è®¤æ„é€ ç©ºçŸ©é˜µ  ä½†æ˜¯åˆå§‹åŒ–ç¬¬ä¸€ä¸ªè¡ŒæŒ‡é’ˆ çŸ©é˜µä¸º1x0å¤§å°
 {
     type = single;
     _pElements = new double*[1];
@@ -22,12 +30,12 @@ MAT::MAT()//Ä¬ÈÏ¹¹Ôì¿Õ¾ØÕó  µ«ÊÇ³õÊ¼»¯µÚÒ»¸öĞĞÖ¸Õë ¾ØÕóÎª1x0´óĞ¡
     nlength = 0;
 }
 
-MAT::MAT(UINT nRow,UINT nCol)//¹¹ÔìxĞĞxÁĞµÄ0¾ØÕó
+MAT::MAT(UINT nRow,UINT nCol)//æ„é€ xè¡Œxåˆ—çš„0çŸ©é˜µ
 {
     type = single;
     if(!nRow)
     {
-        MAT();//¿ÕĞĞ£¿ ÆğÂë³õÊ¼»¯ĞĞÖ¸Õë£¡
+        MAT();//ç©ºè¡Œï¼Ÿ èµ·ç åˆå§‹åŒ–è¡ŒæŒ‡é’ˆï¼
         return;
     }
     _row = nRow;
@@ -38,13 +46,13 @@ MAT::MAT(UINT nRow,UINT nCol)//¹¹ÔìxĞĞxÁĞµÄ0¾ØÕó
     for(UINT i(0);i<nRow;i++)
     {
         _pElements[i] = NULL;
-        if(!nCol)continue;//ÔÊĞíX*0
+        if(!nCol)continue;//å…è®¸X*0
         _pElements[i] = new double[nCol];
         for(UINT j(0);j<nCol;j++)_pElements[i][j]=0;
     }
 }
 
-MAT::MAT(const MAT &mat)//¸´ÖÆ¹¹Ôì
+MAT::MAT(const MAT &mat)//å¤åˆ¶æ„é€ 
 {
     type = mat.type;
     _row = mat._row; 
@@ -53,19 +61,19 @@ MAT::MAT(const MAT &mat)//¸´ÖÆ¹¹Ôì
 
     _pElements = new double*[_row];
 
-    if(mat.type==inherit)//ÕâÖÖ¾ØÕóÊÇ´ÓÏÂ±êÀ´µÄ
+    if(mat.type==inherit)//è¿™ç§çŸ©é˜µæ˜¯ä»ä¸‹æ ‡æ¥çš„
     {
         for(UINT i(0);i<_row;i++)
         {
-            _pElements[i]=mat._pElements[i];//ÎÒÃÇÏ£ÍûµÃµ½Ô­¾ØÕóÔªËØµÄµØÖ·ÒÔ±ã¸³Öµ
+            _pElements[i]=mat._pElements[i];//æˆ‘ä»¬å¸Œæœ›å¾—åˆ°åŸçŸ©é˜µå…ƒç´ çš„åœ°å€ä»¥ä¾¿èµ‹å€¼
         }
     }
-    else//ÊÇµ¥¶À²úÉúµÄ
+    else//æ˜¯å•ç‹¬äº§ç”Ÿçš„
     {
-        for(UINT i(0);i<_row;i++)//ÄÇÃ´ÎÒÃÇ¸´ÖÆÔªËØ
+        for(UINT i(0);i<_row;i++)//é‚£ä¹ˆæˆ‘ä»¬å¤åˆ¶å…ƒç´ 
         {
             _pElements[i] = NULL;
-            if(!_col)continue;//ÔÊĞíX*0
+            if(!_col)continue;//å…è®¸X*0
             _pElements[i] = new double[_col];
             for(UINT j(0);j<_col;j++)_pElements[i][j]=mat._pElements[i][j];
         }
@@ -73,12 +81,12 @@ MAT::MAT(const MAT &mat)//¸´ÖÆ¹¹Ôì
     }
 }
 
-MAT::~MAT()//Îö¹¹
+MAT::~MAT()//ææ„
 {
-    if(!_row){throw "Invalid Matrix!";return;}//ĞĞ²»¿ÉÄÜÎª0
+    if(!_row){throw "Invalid Matrix!";return;}//è¡Œä¸å¯èƒ½ä¸º0
     for(UINT i(0);i<_row;i++)
     {
-        if(_pElements[i]&&type==single)//¶ÀÁ¢¾ØÕó²ÅÄÜÎö¹¹ÁĞÔªËØ
+        if(_pElements[i]&&type==single)//ç‹¬ç«‹çŸ©é˜µæ‰èƒ½ææ„åˆ—å…ƒç´ 
         {
             delete[] _pElements[i];
             _pElements[i]=NULL;
@@ -96,7 +104,7 @@ double MAT::operator = (double num)
 }
 MAT & MAT::operator = (MAT mat)
 {
-    if(type==inherit)return *this;//¼Ì³ĞÀ´µÄ¾ØÕó²»ÄÜ´ÓÁíÒ»¸ömat¸³Öµ
+    if(type==inherit)return *this;//ç»§æ‰¿æ¥çš„çŸ©é˜µä¸èƒ½ä»å¦ä¸€ä¸ªmatèµ‹å€¼
      if(_pElements)
     {
         for(UINT i(0);i<_row;i++)
@@ -105,7 +113,7 @@ MAT & MAT::operator = (MAT mat)
         }
         delete[] _pElements;
     }
-    _pElements = NULL;//Ïàµ±ÓÚÏÈÎö¹¹
+    _pElements = NULL;//ç›¸å½“äºå…ˆææ„
     _row = mat._row; 
     _col = mat._col;
     nlength = mat.nlength;
@@ -121,7 +129,7 @@ MAT & MAT::operator = (MAT mat)
 
 void MAT::CopyFromArray(double ar[],UINT length)
 {
-    if(type==inherit)return;//Ò²²»ÄÜ´ÓÒ»¸öÊı×é¸³Öµ£¬×ÜÖ®Ö»ÄÜ±»¸³Ò»¸ödouble
+    if(type==inherit)return;//ä¹Ÿä¸èƒ½ä»ä¸€ä¸ªæ•°ç»„èµ‹å€¼ï¼Œæ€»ä¹‹åªèƒ½è¢«èµ‹ä¸€ä¸ªdouble
     if(_pElements)
     {
         for(UINT i(0);i<_row;i++)
@@ -142,16 +150,16 @@ void MAT::CopyFromArray(double ar[],UINT length)
 MAT MAT::operator [](UINT id)
 {
     if((!_col)||(!_row))return MAT();
-    MAT matRet;//ÏÈ¿Õ
+    MAT matRet;//å…ˆç©º
 
-    if(_row>1)//±¾¾ØÕóÊÇ¶şÎ¬
+    if(_row>1)//æœ¬çŸ©é˜µæ˜¯äºŒç»´
     {
         //MAT matRet(1,_col);
         if(id>=_row)return MAT();
         matRet._col = _col;
         matRet.nlength = _col;
-        matRet.type = inherit;//¼Ì³ĞÀàĞÍ£¬ÁĞÔªËØÊÇÖ¸ÏòÔ­¾ØÕóµÄ£¬²»ÄÜ±»delete
-        matRet._pElements[0] = _pElements[id];//Ö¸Ïò±¾¾ØÕóÖĞÄ³ĞĞµÄµÚÒ»¸öÔªËØ
+        matRet.type = inherit;//ç»§æ‰¿ç±»å‹ï¼Œåˆ—å…ƒç´ æ˜¯æŒ‡å‘åŸçŸ©é˜µçš„ï¼Œä¸èƒ½è¢«delete
+        matRet._pElements[0] = _pElements[id];//æŒ‡å‘æœ¬çŸ©é˜µä¸­æŸè¡Œçš„ç¬¬ä¸€ä¸ªå…ƒç´ 
         /*
         for(int i(0);i<_col;i++)
         {
@@ -160,7 +168,7 @@ MAT MAT::operator [](UINT id)
         return matRet;
         */
     }
-    else//±¾¾ØÕóÊÇÒ»Î¬
+    else//æœ¬çŸ©é˜µæ˜¯ä¸€ç»´
     {
         //MAT matRet(1,1);
         if(id>=_col)return MAT();
@@ -171,7 +179,7 @@ MAT MAT::operator [](UINT id)
         matRet._col = 1;
         matRet.nlength = 1;
         matRet.type = inherit;
-        matRet._pElements[0] = &_pElements[0][id];//Ö¸Ïò±¾¾ØÕó£¨µ¥ĞĞ£©µÄµÚx¸öÔªËØ
+        matRet._pElements[0] = &_pElements[0][id];//æŒ‡å‘æœ¬çŸ©é˜µï¼ˆå•è¡Œï¼‰çš„ç¬¬xä¸ªå…ƒç´ 
     }
     return matRet;
 }

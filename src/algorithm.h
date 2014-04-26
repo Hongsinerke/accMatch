@@ -1,8 +1,7 @@
 #include "predef.h"
 #include "mat.h"
-double average(MAT &mat);
-double stdev(MAT &mat);
-MAT trapz(MAT &matX,MAT &matY);
-double normalization (MAT &mat , UINT row,UINT col );
-double CorCoe ( MAT &matX , MAT &matY );
-bool Judge(double rX , double rY , double rZ);
+double average(MAT &mat);//平均值
+double stdev(MAT &mat);//标准差
+MAT trapz(MAT &matX,MAT &matY);//梯形积分
+double cov(MAT &matX,MAT &matY);//协方差
+double cor(MAT &matX,MAT &matY);//相关系数
