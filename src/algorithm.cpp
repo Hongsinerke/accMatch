@@ -5,7 +5,8 @@ double stdev(MAT &mat)
     double sum = 0;
     double avr = average(mat);
     if(mat.nlength==0)return 0;
-    for(int i(0); i < length; i++ ) sum += pow(mat.GetValue(0,i)-avr, 2)/length;
+    for(int i(0); i < length; i++ ) sum += pow(mat.GetValue(0,i)-avr, 2);
+    sum /= length;
     return (sqrt(sum));
 }
 double average(MAT &mat)
@@ -49,23 +50,32 @@ double cov(MAT &matX,MAT &matY)
 {
     double Ex = average(matX);
     double Ey = average(matY);
-    cout<<"平均值X: "<<Ex<<endl<<"平均值Y: "<<Ey<<endl;
-    MAT matAvr(matX.nlength,matY.nlength);
-    DEBUG_MAT_INFO(matAvr);
-    for(UINT i(0);i<matX.nlength;i++)
+    if(matX.nlength!=matY.nlength)throw "wrong data.";//归一化之后……
+    //cout<<"平均值X: "<<Ex<<endl<<"平均值Y: "<<Ey<<endl;
+    double dSum(0);
+    UINT nLength = matX.nlength;
+    for(UINT i(0);i<nLength;i++)
     {
-        for(UINT j(0);j<matY.nlength;j++)
-        {
-            matAvr[i][j]=(matX.GetValue(i)-Ex)*(matY.GetValue(j)-Ey);
-        }//构造存在所有X Y组合的矩阵
+        dSum+=matX.GetValue(i)*matY.GetValue(i);
     }
-    DEBUG_MAT_INFO(matAvr);
-    DEBUG_MAT_ELEMENTS(matAvr);
-    cout<<"协方差: "<<scientific<<average(matAvr)<<endl;
-    return average(matAvr);//最后的平均值E{[X-E(X)]*[Y-E(Y)]}
+    return (dSum-Ex*Ey*matX.nlength)/nLength;//   (1/n)sum(XiYi,1,n)-ExEy
 }
-double cor(MAT &matX,MAT &matY)
+double corcoe(MAT &matX,MAT &matY)
 {
-    cout<<"标准差X: "<<stdev(matX)<<"\n标准差Y: "<<stdev(matY)<<endl;
     return cov(matX,matY)/(stdev(matX)*stdev(matY));
+}
+void normalization(MAT &matN,MAT &matStd)
+{
+    double evStd  = stdev(matStd);
+    double avrStd = average(matStd);
+    double evN    = stdev(matN);
+    double avrN   = average(matN);
+    for(UINT i(0);i<matN._row;i++)
+    {
+       for(UINT j(0);j<matN._col;j++)
+        {
+            double norm = (matN.GetValue(i,j)-avrN)/evN;
+            matN.SetValue(i,j,norm*evStd+avrStd);
+        }
+    }
 }
