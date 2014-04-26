@@ -11,8 +11,8 @@ double stdev(MAT &mat)
 }
 double average(MAT &mat)
 { 
-    DEBUG_MAT_INFO(mat);
-    DEBUG_MAT_ELEMENTS(mat);
+    //DEBUG_MAT_INFO(mat);
+    //DEBUG_MAT_ELEMENTS(mat);
     if(mat.nlength==0)return 0;
     double sum=0;
     for(int i(0);i<mat._row;i++)
@@ -22,9 +22,9 @@ double average(MAT &mat)
         {
             double rt = mat.GetValue(i,j);
             sum+=(mat.GetValue(i,j)/mat.nlength);
-            cout<<"loop "<<sum<<"  calc: "<<rt<<"/"<<mat.nlength<<endl;
+            //cout<<"loop "<<sum<<"  calc: "<<rt<<"/"<<mat.nlength<<endl;
         }
-        cout<<"after loop "<<sum<<endl;
+        //cout<<"after loop "<<sum<<endl;
     }
     return sum;
 }

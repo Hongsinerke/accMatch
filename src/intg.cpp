@@ -159,7 +159,7 @@ int main(void)
     matPosZ.SaveToFile(DATA_OUTPUT_OPTIMIZE_POSZ);
 
     MAT m = matAccX.SubMat(0,281,0,290);
-    cout<<"相关系数: "<<scientific<<setprecision(6)<<cor(m,m)<<endl;
+    cout<<"相关系数: "<<setprecision(6)<<corcoe(matVcX,matVcY)<<endl;
 
     
     return 0;
